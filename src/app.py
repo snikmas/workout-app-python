@@ -1,3 +1,5 @@
+from utils.constants import *
+from utils.helpers import *
 class App:
     def __init__(self):
         self.currentUser = None
@@ -5,5 +7,13 @@ class App:
 
     def run(self):
         print("hi")
-        # 1. show menu
-        print(menu)
+        is_user = False
+        if self.currentUser:
+            is_user = self.currentUser
+
+        if is_user:
+            output_menu(menu_user)
+            input = get_int_input(0, 4)
+        else:
+            output_menu(menu_no_user)
+            input = get_int_input(0, 6)
