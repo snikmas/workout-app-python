@@ -1,3 +1,5 @@
+from PyQt5.QtSql import password
+
 from utils.constants import *
 from utils.helpers import *
 from managers.program_manager import *
@@ -46,14 +48,24 @@ class App:
                     print("login")
                 case 2:
                     print("register")
+                    print("Nice to meet you!\nInput your username:")
+                    username = get_str_input(30, None)
+                    print("Input your email:")
+                    email = get_str_input(50, None)
+                    print("Input your password (8+ symbols; contains digits and special symbols):")
+                    password = get_str_input(50, "password")
+                    password_hash =
+
                 case 3:
                     print("library exersice")
                     print("=== Library Exercises ===")
                     #get list of it
                     exercises, total_exercises, total_pages = programManager.get_all_exercises()
                     if exercises is None:
-                        print("No data in the library")
+                        print("some issus")
                         return
+                    elif exercises == 403:
+                        print("403 problrm. write frmo the run")
 
 
                     # output using helpers.

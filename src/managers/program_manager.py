@@ -31,7 +31,8 @@ class ProgramManager:
             print(api_url + param)
             print(res.status_code)
             if res.status_code == 403:
-                print(f"the server problem.. no access");
+                print(f"Oops, we can't open the library now.. Please, try later");
+                return 403, None, None
             if res.status_code != 200:
                 print(f"something is wrong, status code: {res.status_code}... back to the menu")
 
