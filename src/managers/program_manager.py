@@ -7,10 +7,10 @@ import os
 
 class ProgramManager:
     # i guess no need for init etc. just functions? -> need to holding db connection
-    def __init__(self, user, db_connection):
+    def __init__(self, user, db_manager):
         load_dotenv() #it works forever?
         self.user = user
-        self.db_connection = db_connection
+        self.db_manager = db_manager
 
 
 

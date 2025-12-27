@@ -1,4 +1,6 @@
 import json
+
+import bcrypt
 import requests
 import re
 
@@ -40,3 +42,6 @@ def output_exercises(exercises, total_exercises, total_pages):
         print("just checking")
         return
 
+def get_password_hash(password):
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode("utf-8"), salt)

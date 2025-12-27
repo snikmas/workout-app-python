@@ -1,16 +1,22 @@
-from PyQt5.QtSql import password
-
+from src.managers.user_manager import UserManager
 from utils.constants import *
 from utils.helpers import *
 from managers.program_manager import *
+from managers.database_manager import *
 
 class App:
     def __init__(self):
         self.currentUser = None
-        self.db = None #later connect to the db
+        self.db = None
+        self.userManager = None
+        self.databaseManager = None
+        self.programManager = None
+        # actually, no need for db.connection. this is db layer logic
 
     def run(self):
-        programManager = ProgramManager(self.currentUser, self.db)
+        self.databaseManager = DatabaseManager()
+        self.programManager = ProgramManager(self.currentUser, self.databaseManager)
+        self.userManager = UserManager(self.currentUser, self.databaseManager)
 
         print("hi")
         is_user = False
@@ -31,7 +37,7 @@ class App:
                     print("my progress history")
                 case 4:
                     print("=== Library Exercises ===")
-                    all_exercises = programManager.get_all_exercises()
+                    all_exercises = self.programManager.get_all_exercises()
                 case 5:
                     print("my accou settings")
                 case 6:
@@ -54,13 +60,20 @@ class App:
                     email = get_str_input(50, None)
                     print("Input your password (8+ symbols; contains digits and special symbols):")
                     password = get_str_input(50, "password")
-                    password_hash =
+                    password_hash = get_password_hash(password)
+                    # connect to db
+                    self.userManager.register_user(username, email, password_hash)
+
+
+
+                    print("The Account Has Been Created!")
+                    return # for now
 
                 case 3:
                     print("library exersice")
                     print("=== Library Exercises ===")
                     #get list of it
-                    exercises, total_exercises, total_pages = programManager.get_all_exercises()
+                    exercises, total_exercises, total_pages = self.programManager.get_all_exercises()
                     if exercises is None:
                         print("some issus")
                         return
