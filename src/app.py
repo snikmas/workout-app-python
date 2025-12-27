@@ -28,7 +28,8 @@ class App:
                 case 3:
                     print("my progress history")
                 case 4:
-                    print("library")
+                    print("=== Library Exercises ===")
+                    all_exercises = programManager.get_all_exercises()
                 case 5:
                     print("my accou settings")
                 case 6:
