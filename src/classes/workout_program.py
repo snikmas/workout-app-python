@@ -8,3 +8,4 @@ class workout_program:
         self.created_at = created_at
         self.difficulty = difficulty
         self.exercises_set = exercises_set # exersice set.. a dictionary withs sets reps
+        # in database: workout title description target uscles created and difficulty. other stuff can.. links?
