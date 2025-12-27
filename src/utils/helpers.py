@@ -1,3 +1,4 @@
+import json
 import requests
 
 def output_menu(menu):
@@ -13,3 +14,6 @@ def get_int_input(min, max):
 
 def check_connection(api_url):
     return requests.get(api_url).status_code
+
+def handle_json(json_result):
+    return json.loads(json_result)

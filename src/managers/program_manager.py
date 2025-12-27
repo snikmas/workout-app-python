@@ -1,6 +1,7 @@
 from http.client import responses
 from src.utils.helpers import *
 import requests
+import json
 from dotenv import load_dotenv
 import os
 
@@ -16,7 +17,6 @@ class ProgramManager:
     def get_all_exercises(self):
 
         api_url = os.getenv("API_URL") #maybe put to the up? like we use only this url
-        print(api_url)
 
         #actually, for a server part we can put to the another functions
         try:
@@ -25,14 +25,23 @@ class ProgramManager:
                 print("no response from the server... back to the menu\n")
                 return
 
-            param = "/api/v1/exercises/"
+            param = "/api/v1/exercises"
+            # print(api_url + param)
             res = requests.get(api_url + param)
-            if res.status_code == 200:
+            if res.status_code == 500:
                 print("something is wrong... back to the menu")
                 return
 
-            print("response: " + res)
-            res_json = res.json()
+            res_data = res.json()
+            #print(type(res_data))
+            # OK ITS A DICT
+            exercises = res_data.get("data")
+            return exercises
+
+            # we also can return it, but idk, i think
+            # res_info = res_data.get("metadata")
+            # total_pages = res_info.get("totalPages")
+            # total_exercises = res_info.get("totalExercises")
 
         except:
             print("oops, something wrong")
