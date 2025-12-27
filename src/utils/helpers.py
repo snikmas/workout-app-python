@@ -15,5 +15,13 @@ def get_int_input(min, max):
 def check_connection(api_url):
     return requests.get(api_url).status_code
 
-def handle_json(json_result):
-    return json.loads(json_result)
+def output_exercises(exercises, total_exercises, total_pages):
+
+    print(f"Result: {total_exercises} exercises.")
+    for page in range(0, total_pages):
+        print(f"{page}/{total_pages} page:")
+        # 10 exercises per page
+        for exercise in range (page * 10, page * 10 + 10):
+            print(exercise)
+        print("just checking")
+        return

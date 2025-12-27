@@ -50,7 +50,15 @@ class App:
                     print("library exersice")
                     print("=== Library Exercises ===")
                     #get list of it
-                    all_exercises = programManager.get_all_exercises()
+                    exercises, total_exercises, total_pages = programManager.get_all_exercises()
+                    if exercises is None:
+                        print("No data in the library")
+                        return
+
+
+                    # output using helpers.
+                    output_exercises(exercises, total_exercises, total_pages)
+
 
                 case 4:
                     print("try a random workout")

@@ -28,26 +28,26 @@ class ProgramManager:
             param = "/api/v1/exercises"
             # print(api_url + param)
             res = requests.get(api_url + param)
-            if res.status_code == 500:
-                print("something is wrong... back to the menu")
-                return
+            print(api_url + param)
+            print(res.status_code)
+            if res.status_code == 403:
+                print(f"the server problem.. no access");
+            if res.status_code != 200:
+                print(f"something is wrong, status code: {res.status_code}... back to the menu")
 
             res_data = res.json()
             #print(type(res_data))
             # OK ITS A DICT
-            exercises = res_data.get("data")
-            return exercises
-
-            # we also can return it, but idk, i think
-            # res_info = res_data.get("metadata")
-            # total_pages = res_info.get("totalPages")
-            # total_exercises = res_info.get("totalExercises")
-
-        except:
-            print("oops, something wrong")
-
-
-
-        # call to the api and return
-        #
-        return
+            res_exercises = res_data.get("data")
+            res_info = res_data.get("metadata")
+            total_pages = res_info.get("totalPages")
+            total_exercises = res_info.get("totalExercises")
+            print(res_exercises)
+            print(total_exercises)
+            print(total_pages)
+            # 3 returns.. is ok.
+            return res_exercises, total_exercises, total_pages
+        except TypeError:
+            print("oops, TypeError")
+        finally:
+            return None, None, None
