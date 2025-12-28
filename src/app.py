@@ -22,6 +22,7 @@ class App:
         running = 1
         while running:
             if self.currentUser:
+                print(f"Welcone back, {self.currentUser.nickname}!")
                 output_menu(menu_user)
                 input = get_int_input(0, 4)
 
@@ -41,6 +42,7 @@ class App:
                     case 6:
                         print("log out")
                     case 0:
+                        self.databaseManager.close_connection()
                         running = False
 
             else:
@@ -87,6 +89,7 @@ class App:
                     case 4:
                         print("try a random workout")
                     case 0:
+                        self.databaseManager.close_connection()
                         running = 0
 
         print("See you next time!")

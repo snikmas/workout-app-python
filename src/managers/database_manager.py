@@ -1,4 +1,7 @@
 import traceback
+import logging
+from inspect import trace
+
 import psycopg2
 from dotenv import load_dotenv
 import os
@@ -7,6 +10,7 @@ from src.classes.user import User
 
 
 class DatabaseManager:
+    logging.basicConfig(level=logging.ERROR)
 
     def __init__(self):
         load_dotenv()
@@ -30,13 +34,13 @@ class DatabaseManager:
                 password=self.password,
                 port=self.port)
             self.cursor = self.db_con.cursor() #use cursor to handle queries
-        except:
-            print("problem with conneciton")
+        except Exception:
+            logging.exception("Problem occurred: ")
         return self.db_con
 
 
     def close_connection(self):
-        pass #here later have to close connecitno
+        self.db_con.close() #
 
 
     # user stuff
@@ -52,17 +56,16 @@ class DatabaseManager:
                                      (username, email))
         return result
 
-    # retunrs
+
     def create_user(self, user):
         # print(User.print_info(user)) just check data
         try:
             self.cursor.execute("INSERT INTO users (nickname, email, password_hash, created_at) VALUES (%s, %s, %s, %s)",
                                      (user.nickname, user.email, user.password, user.created_at))
             self.db_con.commit()
-            #user.created_at = self.get_data("users", "email", user.email, "created_at")
-            return 0
+            return user
         except psycopg2.errors.NotNullViolation as NullError:
             print(f"Null Error happened {NullError}")
         except Exception:
-            print(f"the error during creating a user {Exception}")
-        return 1
+            logging.exception("An error occured: ")
+        return None

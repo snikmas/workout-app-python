@@ -4,8 +4,10 @@ import requests
 import json
 from dotenv import load_dotenv
 import os
+import logging
 
 class ProgramManager:
+    logging.basicConfig(level=logging.ERROR)
     # i guess no need for init etc. just functions? -> need to holding db connection
     def __init__(self, user, db_manager):
         load_dotenv() #it works forever?
@@ -43,12 +45,10 @@ class ProgramManager:
             res_info = res_data.get("metadata")
             total_pages = res_info.get("totalPages")
             total_exercises = res_info.get("totalExercises")
-            print(res_exercises)
-            print(total_exercises)
-            print(total_pages)
-            # 3 returns.. is ok.
             return res_exercises, total_exercises, total_pages
         except TypeError:
             print("oops, TypeError")
+        except Exception:
+            logging.exception("An error occurred: ")
         finally:
             return None, None, None

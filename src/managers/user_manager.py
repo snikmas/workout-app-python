@@ -1,8 +1,12 @@
+import logging
 from dataclasses import dataclass
 from src.classes.user import User
 from datetime import datetime
 
 class UserManager:
+
+    logging.basicConfig(level=logging.ERROR)
+
     def __init__(self, user, db_manager):
         self.user = user
         self.db_manager = db_manager
@@ -20,5 +24,4 @@ class UserManager:
         date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         new_user = User(nickname=nickname, password=password_hash, email=email, created_at=date)
-        res = self.db_manager.create_user(new_user)
-        return res
+        return self.db_manager.create_user(new_user)
