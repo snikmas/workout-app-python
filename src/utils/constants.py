@@ -13,3 +13,10 @@ menu_user = [
     "5. My account settings",
     "6. Log Out",
     "0. Exit"]
+
+db_user_tuple = {
+    "nickname": 0,
+    "email": 1,
+    "created_at": 2,
+    "password_hash": 3,
+}

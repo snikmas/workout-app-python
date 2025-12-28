@@ -1,11 +1,9 @@
-import traceback
-import logging
-from inspect import trace
-
-import psycopg2
 from dotenv import load_dotenv
+import bcrypt
+import logging
+import psycopg2
 import os
-
+from src.utils.constants import db_user_tuple
 from src.classes.user import User
 
 
@@ -67,5 +65,26 @@ class DatabaseManager:
         except psycopg2.errors.NotNullViolation as NullError:
             print(f"Null Error happened {NullError}")
         except Exception:
-            logging.exception("An error occured: ")
+            logging.exception("An error occurred: ")
         return None
+
+    def auth_user(self, credentials, password):
+        try:
+            res = self.cursor.execute("SELECT * FROM users WHERE nickname = (%s) OR email = (%s)",
+                                      (credentials, credentials))
+            res = self.cursor.fetchone()
+
+            if res is None:
+                return None
+
+            # res is a tuple. NO PROBLEMS
+            password_db = res[db_user_tuple.get("password_hash")]
+            print(password_db)# its' better to check again
+
+            if bcrypt.checkpw(password, password_db.encode('utf-8')):
+                return res
+
+        except Exception:
+            logging.exception("An error occurred: ")
+
+        return

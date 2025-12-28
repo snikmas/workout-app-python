@@ -22,7 +22,7 @@ class App:
         running = 1
         while running:
             if self.currentUser:
-                print(f"Welcone back, {self.currentUser.nickname}!")
+                print(f"Welconme back, {self.currentUser.nickname}!")
                 output_menu(menu_user)
                 input = get_int_input(0, 4)
 
@@ -40,7 +40,8 @@ class App:
                     case 5:
                         print("my accou settings")
                     case 6:
-                        print("log out")
+                        self.currentUser = None
+                        print("You have been logged out.")
                     case 0:
                         self.databaseManager.close_connection()
                         running = False
@@ -51,18 +52,22 @@ class App:
                 match input:
                     case 1:
                         print("login")
+                        print("Input your username/email: ")
+                        credentials = get_str_input(50, None)
+                        print("Input your password: ")
+                        password = get_str_input(50, None)
+                        res = self.userManager.login_user(credentials, password)
+
                     case 2:
-                        print("register")
                         print("Nice to meet you!\nInput your username:")
                         username = get_str_input(30, None)
                         print("Input your email:")
                         email = get_str_input(50, None)
                         print("Input your password (8+ symbols; contains digits and special symbols):")
                         password = get_str_input(50, "password")
-                        password_hash = get_password_hash(password)
 
-                        # connect to db
-                        res = self.userManager.register_user(username, email, password_hash)
+
+                        res = self.userManager.register_user(username, email, password)
                         if res is None:
                             print("something wrong in create_user..")
                         else:
