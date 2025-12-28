@@ -1,3 +1,5 @@
+#menu stuff
+
 menu_no_user = [
     "1. Login",
     "2. Register",
@@ -14,6 +16,14 @@ menu_user = [
     "6. Log Out",
     "0. Exit"]
 
+incorrect_credentials = [
+    "1. Try again",
+    "2. Forgot password",
+    "0. Back to the menu"
+]
+
+
+# db stuff
 db_user_tuple = {
     "nickname": 0,
     "email": 1,

@@ -3,8 +3,12 @@ import bcrypt
 import logging
 import psycopg2
 import os
+
+from pygame.image import tobytes
+
 from src.utils.constants import db_user_tuple
 from src.classes.user import User
+from src.utils.helpers import mapping_user_data
 
 
 class DatabaseManager:
@@ -43,12 +47,6 @@ class DatabaseManager:
 
     # user stuff
     def is_user_exist(self, username, email):
-        # no need, it runs first
-        #if self.db_con is None:
-        #    self.db_con = self.get_connection()
-        #    if self.db_con is None:
-        #        print("Can't connect to the db. Back to the menu...")
-        #        return
 
         result = self.cursor.execute("SELECT * FROM users WHERE nickname = (%s) OR email = (%s)",
                                      (username, email))
@@ -56,7 +54,6 @@ class DatabaseManager:
 
 
     def create_user(self, user):
-        # print(User.print_info(user)) just check data
         try:
             self.cursor.execute("INSERT INTO users (nickname, email, password_hash, created_at) VALUES (%s, %s, %s, %s)",
                                      (user.nickname, user.email, user.password, user.created_at))
@@ -78,13 +75,11 @@ class DatabaseManager:
                 return None
 
             # res is a tuple. NO PROBLEMS
-            password_db = res[db_user_tuple.get("password_hash")]
-            print(password_db)# its' better to check again
+            password_from_db = res[db_user_tuple.get("password_hash")]
 
-            if bcrypt.checkpw(password, password_db.encode('utf-8')):
-                return res
-
+            if bcrypt.checkpw(password, bytes(password_from_db)):
+                user = mapping_user_data(res)
+                return user
         except Exception:
             logging.exception("An error occurred: ")
-
-        return
+        return None

@@ -18,20 +18,17 @@ class ProgramManager:
 
     def get_all_exercises(self):
 
-        api_url = os.getenv("API_URL") #maybe put to the up? like we use only this url
+        api_url = os.getenv("API_URL")
 
-        #actually, for a server part we can put to the another functions
         try:
-            #check connection with the server (does it okay?) or no need, just call thing
             if check_connection(api_url) == 500:
                 print("no response from the server... back to the menu\n")
                 return
 
             param = "/api/v1/exercises"
-            # print(api_url + param)
             res = requests.get(api_url + param)
             print(api_url + param)
-            print(res.status_code)
+            print(res.status_code) # for my stuff
             if res.status_code == 403:
                 print(f"Oops, we can't open the library now.. Please, try later");
                 return 403, None, None

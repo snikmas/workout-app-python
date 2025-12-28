@@ -22,9 +22,9 @@ class App:
         running = 1
         while running:
             if self.currentUser:
-                print(f"Welconme back, {self.currentUser.nickname}!")
+                print(f"Welcome back, {self.currentUser.nickname}!")
                 output_menu(menu_user)
-                input = get_int_input(0, 4)
+                input = get_int_input(0, 6)
 
                 match input:
                     case 1:
@@ -48,15 +48,33 @@ class App:
 
             else:
                 output_menu(menu_no_user)
-                input = get_int_input(0, 6)
+                input = get_int_input(0, 4)
                 match input:
                     case 1:
-                        print("login")
-                        print("Input your username/email: ")
-                        credentials = get_str_input(50, None)
-                        print("Input your password: ")
-                        password = get_str_input(50, None)
-                        res = self.userManager.login_user(credentials, password)
+                        logging_run = True
+                        while logging_run:
+                            print("Input your username/email: ")
+                            credentials = get_str_input(50, None)
+                            print("Input your password: ")
+                            password = get_str_input(50, None)
+                            res = self.userManager.login_user(credentials, password)
+                            if res:
+                                self.userManager = res
+                            else:
+                                print("Incorrect username/email or password.")
+                                # ask for a trying again or forgot password
+                                output_menu(incorrect_credentials)
+                                input = get_int_input(0, 2)
+
+                                match(input):
+                                    case 1:
+                                        pass;
+                                    case 2:
+                                        self.forgot_password()
+                                        print("Please, input your credentials again.")
+                                        pass
+                                    case 0:
+                                        logging_run = False
 
                     case 2:
                         print("Nice to meet you!\nInput your username:")
@@ -99,3 +117,7 @@ class App:
 
         print("See you next time!")
         return
+
+    def forgot_password(self):
+        print("we got forgot apssword")
+        pass
