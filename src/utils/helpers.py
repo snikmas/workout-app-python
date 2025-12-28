@@ -45,3 +45,6 @@ def output_exercises(exercises, total_exercises, total_pages):
 def get_password_hash(password):
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password.encode("utf-8"), salt)
+
+def check_connection(api_url):
+    return requests.get(api_url).status_code

@@ -1,6 +1,13 @@
 class User:
-    def __init__(self, username, password, email, created_at):
-        self.username = username #username is login
+    def __init__(self, nickname, password, email, created_at):
+        self.nickname = nickname #username is login
         self.password = password
-        self.created_at = created_at
         self.email = email
+        self.created_at = created_at
+
+    @staticmethod
+    def print_info(user):
+        return (f"Username: {user.nickname}\n"
+                f"Password: {user.password}\n"
+                f"Email: {user.email}"
+                f"Created_at: {user.created_at}")
