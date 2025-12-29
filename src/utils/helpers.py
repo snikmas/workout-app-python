@@ -1,11 +1,7 @@
-import json
-
 import bcrypt
 import requests
-import re
-
-from src.classes.user import User
-from src.utils.constants import db_user_tuple
+from src.classes.session import Session
+from src.utils.constants import *
 
 
 # menu things
@@ -60,9 +56,10 @@ def check_connection(api_url):
     return requests.get(api_url).status_code
 
 # mappers
-def mapping_user_data(res):
+def mapping_session_data(res):
     nickname = res[db_user_tuple.get("nickname")]
-    email = res[db_user_tuple.get("email")]
-    created_at = res[db_user_tuple.get("created_at")]
-    password_hash = res[db_user_tuple.get("password_hash")] # *** CHECK NOTES THIS THING
-    return User(nickname=nickname, email=email, created_at=created_at, password=password_hash)
+    user_id = res[db_user_tuple.get("id")]
+    # email = res[db_user_tuple.get("email")]
+    # created_at = res[db_user_tuple.get("created_at")]
+    # password_hash = res[db_user_tuple.get("password_hash")] # *** CHECK NOTES THIS THING
+    return Session(nickname=nickname, user_id=user_id)

@@ -1,17 +1,17 @@
 import logging
 from dataclasses import dataclass
+
+from src.classes.session import Session
 from src.utils.helpers import *
 from src.classes.user import User
 from datetime import datetime
 
 
-
 class UserManager:
-
     logging.basicConfig(level=logging.ERROR)
 
     def __init__(self, session, db_manager):
-        self.session= session
+        self.session = session
         self.db_manager = db_manager
 
     def register_user(self, nickname, email, password):
@@ -27,8 +27,8 @@ class UserManager:
         #create a session and return it ! ! !
         new_user.id = user_id
 
-
-        session = None
+        session = Session(new_user.id, new_user.nickname)
+        print(f"Sessino type form the 31 lime user: {type(session)}, {session}")
 
         return session
 
@@ -36,5 +36,4 @@ class UserManager:
         password = password.encode('utf-8')
         # get response and handle it to the user class
         res = self.db_manager.auth_user(credentials, password)
-
-        pass
+        return res # this is a session

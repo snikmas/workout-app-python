@@ -16,6 +16,18 @@ menu_user = [
     "6. Log Out",
     "0. Exit"]
 
+menu_settings = [
+    "1. Change My Nickname",
+    "2. Change My Email",
+    "3. Change My Password",
+    "4. Delete My Account",
+    "0. Exit"
+    # etc
+]
+
+
+
+
 incorrect_credentials = [
     "1. Try again",
     "2. Forgot password",
@@ -25,8 +37,9 @@ incorrect_credentials = [
 
 # db stuff
 db_user_tuple = {
-    "nickname": 0,
-    "email": 1,
-    "created_at": 2,
-    "password_hash": 3,
+    "id": 0,
+    "nickname": 1,
+    "email": 2,
+    "created_at": 3,
+    "password_hash": 4
 }

@@ -5,7 +5,7 @@ import psycopg2
 import os
 
 from src.utils.constants import db_user_tuple
-from src.utils.helpers import mapping_user_data
+from src.utils.helpers import *
 
 
 class DatabaseManager:
@@ -80,8 +80,8 @@ class DatabaseManager:
             password_from_db = res[db_user_tuple.get("password_hash")]
 
             if bcrypt.checkpw(password, bytes(password_from_db)):
-                user = mapping_user_data(res)
-                return user
+                session = mapping_session_data(res)
+                return session
         except Exception:
             logging.exception("An error occurred: ")
         return None
@@ -89,6 +89,11 @@ class DatabaseManager:
 
     #have to check
     def get_info_from_db(self, table_name, get_this, find_by, value):
-        res = self.cursor.execute(f"SELECT {get_this} FROM {table_name} WHERE {find_by} = (%s)", (value));
-        print(f"res: {res}")
-        return res
+        try:
+            res = self.cursor.execute(f"SELECT {get_this} FROM {table_name} WHERE {find_by} = %s", (value,))
+            return res
+        except TypeError:
+            print("the type error from the get_info_from_fb")
+            logging.exception("More info: ")
+
+        return None
