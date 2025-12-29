@@ -4,10 +4,7 @@ import logging
 import psycopg2
 import os
 
-from pygame.image import tobytes
-
 from src.utils.constants import db_user_tuple
-from src.classes.user import User
 from src.utils.helpers import mapping_user_data
 
 
@@ -48,9 +45,10 @@ class DatabaseManager:
     # user stuff
     def is_user_exist(self, username, email):
 
-        result = self.cursor.execute("SELECT * FROM users WHERE nickname = (%s) OR email = (%s)",
+        self.cursor.execute("SELECT * FROM users WHERE nickname = (%s) OR email = (%s)",
                                      (username, email))
-        return result
+
+        return self.cursor.fetchone()
 
 
     def create_user(self, user):
@@ -58,6 +56,10 @@ class DatabaseManager:
             self.cursor.execute("INSERT INTO users (nickname, email, password_hash, created_at) VALUES (%s, %s, %s, %s)",
                                      (user.nickname, user.email, user.password, user.created_at))
             self.db_con.commit()
+
+            #get id
+            user.id = self.get_info_from_db("users", "id", "email", user.email)
+            print(f"FROMT HE CREATE USER DATABASE: USERID AND ITS TYPE: {user.id, type(user.id)}")
             return user
         except psycopg2.errors.NotNullViolation as NullError:
             print(f"Null Error happened {NullError}")
@@ -83,3 +85,10 @@ class DatabaseManager:
         except Exception:
             logging.exception("An error occurred: ")
         return None
+
+
+    #have to check
+    def get_info_from_db(self, table_name, get_this, find_by, value):
+        res = self.cursor.execute(f"SELECT {get_this} FROM {table_name} WHERE {find_by} = (%s)", (value));
+        print(f"res: {res}")
+        return res

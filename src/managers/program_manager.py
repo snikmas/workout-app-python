@@ -9,9 +9,9 @@ import logging
 class ProgramManager:
     logging.basicConfig(level=logging.ERROR)
     # i guess no need for init etc. just functions? -> need to holding db connection
-    def __init__(self, user, db_manager):
+    def __init__(self, session, db_manager):
         load_dotenv() #it works forever?
-        self.user = user
+        self.session= session
         self.db_manager = db_manager
 
 

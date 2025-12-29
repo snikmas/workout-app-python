@@ -3,26 +3,30 @@ from utils.constants import *
 from utils.helpers import *
 from managers.program_manager import *
 from managers.database_manager import *
+from managers.session_manager import *
 
 class App:
     def __init__(self):
-        self.currentUser = None
+        # self.currentUser = None no need
+        self.session = None
         self.db = None
         self.userManager = None
         self.databaseManager = None
         self.programManager = None
+        self.sessionManager = None
         # actually, no need for db.connection. this is db layer logic
 
     def run(self):
         self.databaseManager = DatabaseManager()
-        self.programManager = ProgramManager(self.currentUser, self.databaseManager)
-        self.userManager = UserManager(self.currentUser, self.databaseManager)
+        self.sessionManager = SessionManager()
+        self.programManager = ProgramManager(self.session, self.databaseManager)
+        self.userManager = UserManager(self.session, self.databaseManager)
 
         print("hi")
         running = 1
         while running:
-            if self.currentUser:
-                print(f"Welcome back, {self.currentUser.nickname}!")
+            if self.session:
+                print(f"Welcome back, {self.session.nickname}!")
                 output_menu(menu_user)
                 input = get_int_input(0, 6)
 
@@ -40,7 +44,7 @@ class App:
                     case 5:
                         print("my accou settings")
                     case 6:
-                        self.currentUser = None
+                        self.session = None
                         print("You have been logged out.")
                     case 0:
                         self.databaseManager.close_connection()
@@ -89,7 +93,8 @@ class App:
                         if res is None:
                             print("something wrong in create_user..")
                         else:
-                            self.currentUser = res
+                            # create a session?
+                            self.session = res
 
                         print("The Account Has Been Created!")
 

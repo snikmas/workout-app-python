@@ -10,8 +10,8 @@ class UserManager:
 
     logging.basicConfig(level=logging.ERROR)
 
-    def __init__(self, user, db_manager):
-        self.user = user
+    def __init__(self, session, db_manager):
+        self.session= session
         self.db_manager = db_manager
 
     def register_user(self, nickname, email, password):
@@ -21,9 +21,16 @@ class UserManager:
 
         password_hash = get_password_hash(password)
         date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        new_user = User(nickname=nickname, password=password_hash, email=email, created_at=date)
+        new_user = User(nickname=nickname, password=password_hash, email=email, created_at=date, id=None)
 
-        return self.db_manager.create_user(new_user)
+        user_id = self.db_manager.create_user(new_user)
+        #create a session and return it ! ! !
+        new_user.id = user_id
+
+
+        session = None
+
+        return session
 
     def login_user(self, credentials, password):
         password = password.encode('utf-8')
