@@ -28,7 +28,7 @@ class App:
 
                 match input:
                     case 1:
-                        print("start a new work session")
+                        print("start a new work session.py")
                     case 2:
                         print("my work programs")
 
@@ -119,5 +119,8 @@ class App:
         return
 
     def forgot_password(self):
-        print("we got forgot apssword")
+        #print("we got forgot apssword")
+        print("Input your email:")
+        user_email = get_str_input(None, None)
+
         pass

@@ -4,4 +4,4 @@ class Workout_session:
         self.date = date
         self.feeling = feeling
         self.notes = notes
-        # in the db: date feeling notes and id workout session. create
+        # in the db: date feeling notes and id workout session.py. create

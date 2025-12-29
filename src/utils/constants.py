@@ -8,7 +8,7 @@ menu_no_user = [
     "0. Exit"]
 
 menu_user = [
-    "1. Start a new workout session",
+    "1. Start a new workout session.py",
     "2. My workout programs",
     "3. My progress & history",
     "4. Exercise Library",
