@@ -1,3 +1,4 @@
+import jwt
 from src.managers.user_manager import UserManager
 from utils.constants import *
 from utils.helpers import *
@@ -21,6 +22,7 @@ class App:
         self.session_manager = SessionManager()
         self.program_manager = ProgramManager(self.session, self.database_manager)
         self.user_manager = UserManager(self.session, self.database_manager)
+        generateSecret()
 
         print("hi")
         running = 1
@@ -84,11 +86,11 @@ class App:
                             credentials = get_str_input(50, None)
                             print("Input your password: ")
                             password = get_str_input(50, None)
-                            res = self.user_manager.login_user(credentials, password)
+                            res = self.user_manager.login_user(credentials, password, None, None)
                             if res:
                                 # create token and is_auth pass to the res
 
-                                token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+                                # token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
                                 self.session = res
                                 print("Welcome back!")
                                 break # maybe
@@ -117,6 +119,7 @@ class App:
                         password = get_str_input(50, "password")
 
 
+                        # create
                         res = self.user_manager.register_user(username, email, password)
                         if res is None:
                             print("something wrong in create_user..")

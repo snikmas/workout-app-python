@@ -27,13 +27,21 @@ class UserManager:
         #create a session and return it ! ! !
         new_user.id = user_id
 
-        session = Session(new_user.id, new_user.nickname)
-        print(f"Sessino type form the 31 lime user: {type(session)}, {session}")
+        # later maybe have to put to the another manager
 
-        return session
+        # call it after login or registr
+        self.auth_user(new_user.id, new_user.nickname)
+
+
+        return self.session
 
     def login_user(self, credentials, password):
         password = password.encode('utf-8')
         # get response and handle it to the user class
         res = self.db_manager.auth_user(credentials, password)
         return res # this is a session
+
+    def auth_user(self, user_id, user_nickname):
+        token = createToken(user_id)
+        session = Session(user_id, user_nickname, token, True)
+        self.session = session

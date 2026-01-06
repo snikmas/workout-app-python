@@ -1,5 +1,12 @@
+import secrets
+import os
+import datetime
+import jwt
+
 import bcrypt
 import requests
+from dotenv import load_dotenv
+
 from src.classes.session import Session
 from src.utils.constants import *
 
@@ -44,6 +51,37 @@ def get_str_input(limit, feature):
                 print("Invalid input, try agian...")
                 user = input(">> ")
     return user.strip()
+
+def generateSecret():
+    #try intialize or add text to the env -> save ti there
+    new_secret = secrets.token_hex(32)
+
+    print("aaaaaa")
+    # print(os.path.exists(".env"))
+    if os.path.exists(".env"):
+        with open(".env", "a") as f:
+            # later have to check if its already exists DONT chagne
+            f.write(f"JWT_SECRET_KEY={new_secret}\n")
+            print("wroted")
+
+def getSecret():
+    load_dotenv()
+    key = os.getenv("JWT_SECRET_KEY")
+    if key:
+        return key
+    else:
+        print("SOme error... cant gind the secret (helpers")
+
+
+def createToken(user_id):
+    paylaod = {
+        "user_id": user_id,
+        "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)
+    }
+
+    secret_key = getSecret()
+    token = jwt.encode(paylaod, secret_key, algorhtm="HS256")
+    return token
 
 
 # other small helper functions
