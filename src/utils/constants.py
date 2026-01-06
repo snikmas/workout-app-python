@@ -40,6 +40,6 @@ db_user_tuple = {
     "id": 0,
     "nickname": 1,
     "email": 2,
-    "created_at": 3,
-    "password_hash": 4
+    "password_hash": 3,
+    "created_at": 4,
 }

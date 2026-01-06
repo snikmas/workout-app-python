@@ -52,12 +52,12 @@ class App:
                                 print("change a nickname")
                                 print("Input your new nickname:")
                                 nickname = get_str_input(50, None)
-                                checkSession = self.session_manager.check_session(self.session)#?
-                                print("Input ypur password again to update your nickname:")
+                                if(self.session):
+                                    #needs to pass token and is_auth
+                                    checkSession = self.session_manager.check_session(self.session) #?
+                                print("Input your password again to update your nickname:")
                                 password = get_str_input(100, "password")
-                                # check_session() no need
-                                # if everything is okay: "the nickckanem has been updated!" ?
-                                # to change -> input your password again?
+                                #have to call jwt?
                             case 2:
                                 print("change a email")
                             case 3:
@@ -86,8 +86,12 @@ class App:
                             password = get_str_input(50, None)
                             res = self.user_manager.login_user(credentials, password)
                             if res:
+                                # create token and is_auth pass to the res
+
+                                token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
                                 self.session = res
                                 print("Welcome back!")
+                                break # maybe
                             else:
                                 print("Incorrect username/email or password.")
                                 # ask for a trying again or forgot password
