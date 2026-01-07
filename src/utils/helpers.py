@@ -38,9 +38,9 @@ def get_int_input(min, max):
 
 def get_str_input(limit, feature):
     user = input(">> ")
-    match(feature):
+    match feature:
         case None:
-            while user == None or len(user.strip()) < 3 or len(user.strip()) > limit or " " in user or not any(ch.isalpha() for ch in user):
+            while user is None or len(user.strip()) < 3 or len(user.strip()) > limit or " " in user or not any(ch.isalpha() for ch in user):
                 print("Invalid input, try again...")
                 user = input(">> ")
         case "password": #requirements: has numbers/special symbosl
@@ -52,11 +52,10 @@ def get_str_input(limit, feature):
                 user = input(">> ")
     return user.strip()
 
-def generateSecret():
+def generate_secret():
     #try intialize or add text to the env -> save ti there
     new_secret = secrets.token_hex(32)
 
-    print("aaaaaa")
     # print(os.path.exists(".env"))
     if os.path.exists(".env"):
         with open(".env", "a") as f:
@@ -64,7 +63,8 @@ def generateSecret():
             f.write(f"JWT_SECRET_KEY={new_secret}\n")
             print("wroted")
 
-def getSecret():
+#works
+def get_secret():
     load_dotenv()
     key = os.getenv("JWT_SECRET_KEY")
     if key:
@@ -73,14 +73,15 @@ def getSecret():
         print("SOme error... cant gind the secret (helpers")
 
 
-def createToken(user_id):
-    paylaod = {
+# works
+def create_token(user_id):
+    payload = {
         "user_id": user_id,
         "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)
     }
 
-    secret_key = getSecret()
-    token = jwt.encode(paylaod, secret_key, algorhtm="HS256")
+    secret_key = get_secret()
+    token = jwt.encode(payload, secret_key, algorithm="HS256")
     return token
 
 

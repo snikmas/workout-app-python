@@ -22,7 +22,7 @@ class App:
         self.session_manager = SessionManager()
         self.program_manager = ProgramManager(self.session, self.database_manager)
         self.user_manager = UserManager(self.session, self.database_manager)
-        generateSecret()
+        generate_secret()
 
         print("hi")
         running = 1
@@ -44,17 +44,16 @@ class App:
                         print("=== Library Exercises ===")
                         all_exercises = self.program_manager.get_all_exercises()
                     case 5:
-                        print("my accou settings")
                         print("=== Settings ===")
                         output_menu(menu_settings)
                         input = get_int_input(0, 4)
 
-                        match(input):
+                        match input:
                             case 1:
                                 print("change a nickname")
                                 print("Input your new nickname:")
                                 nickname = get_str_input(50, None)
-                                if(self.session):
+                                if self.session:
                                     #needs to pass token and is_auth
                                     checkSession = self.session_manager.check_session(self.session) #?
                                 print("Input your password again to update your nickname:")
@@ -125,7 +124,8 @@ class App:
                             print("something wrong in create_user..")
                         else:
                             self.session = res
-
+                            print(self.session)
+                        #no probkems
                         print("The Account Has Been Created!")
 
                     case 3:

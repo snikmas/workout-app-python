@@ -23,15 +23,14 @@ class UserManager:
         date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         new_user = User(nickname=nickname, password=password_hash, email=email, created_at=date, id=None)
 
-        user_id = self.db_manager.create_user(new_user)
+        new_user = self.db_manager.create_user(new_user)
         #create a session and return it ! ! !
-        new_user.id = user_id
 
         # later maybe have to put to the another manager
 
         # call it after login or registr
         self.auth_user(new_user.id, new_user.nickname)
-
+        print(self.session)
 
         return self.session
 
@@ -42,6 +41,6 @@ class UserManager:
         return res # this is a session
 
     def auth_user(self, user_id, user_nickname):
-        token = createToken(user_id)
+        token = create_token(user_id)
         session = Session(user_id, user_nickname, token, True)
         self.session = session
