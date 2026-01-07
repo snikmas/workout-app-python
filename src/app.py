@@ -47,24 +47,54 @@ class App:
                         print("=== Settings ===")
                         output_menu(menu_settings)
                         input = get_int_input(0, 4)
+                        print("Input your password again to make changes")
+                        password = get_str_input(50, None)
+                        res = self.user_manager.verify_password(self.session.user_id, password)
+                        if res is None:
+                            print("Wrong password. Back to menu...")
+                            return
 
                         match input:
                             case 1:
-                                print("change a nickname")
                                 print("Input your new nickname:")
                                 nickname = get_str_input(50, None)
-                                if self.session:
-                                    #needs to pass token and is_auth
-                                    checkSession = self.session_manager.check_session(self.session) #?
-                                print("Input your password again to update your nickname:")
-                                password = get_str_input(100, "password")
-                                #have to call jwt?
+                                res = self.user_manager.change_user_data(self.session.user_id, nickname, "nickname")
+                                if res is not True:
+                                    print(res)
+                                    print("Back to menu...")
+                                    return
+                                print("The data updated")
                             case 2:
-                                print("change a email")
+                                print("Input your new email:")
+                                email = get_str_input(50, None)
+                                res = self.user_manager.change_user_data(self.session.user_id, email, "email")
+                                if res is not True:
+                                    print(res)
+                                    print("Back to menu...")
+                                    return
+                                print("The data updated")
                             case 3:
-                                print("change a password")
+                                print("Input your password (8+ symbols; contains digits and special symbols):")
+                                password = get_str_input(50, "password")
+
+                                res = self.user_manager.change_user_data(self.session.user_id, password)
+                                if res is not True:
+                                    print(res)
+                                    print("Back to menu...")
+                                    return
+                                print("The data updated")
                             case 4:
-                                print("change a delete a password")
+                                print("Are you really want to delete your account? [Y/N]")
+                                user = get_yes_no()
+                                if user == 'Y':
+                                    res = self.user_manage.delete_account(self.session.user_id)
+                                    if user is not True:
+                                        print("Sometihng wrong...")
+                                        return
+                                    print("Your profile has been deleted. Bye")
+                                    self.session = None
+                                    return
+
                             case 0:
                                 return
                     case 6:
@@ -87,9 +117,7 @@ class App:
                             password = get_str_input(50, None)
                             res = self.user_manager.login_user(credentials, password, None, None)
                             if res:
-                                # create token and is_auth pass to the res
-
-                                # token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+                                # res is a session
                                 self.session = res
                                 print("Welcome back!")
                                 break # maybe
@@ -125,7 +153,7 @@ class App:
                         else:
                             self.session = res
                             print(self.session)
-                        #no probkems
+                        #no problems
                         print("The Account Has Been Created!")
 
                     case 3:
@@ -134,6 +162,7 @@ class App:
                         #get list of it
                         exercises, total_exercises, total_pages = self.program_manager.get_all_exercises()
                         if exercises is None:
+
                             print("some issus")
                             return
                         elif exercises == 403:

@@ -52,6 +52,13 @@ def get_str_input(limit, feature):
                 user = input(">> ")
     return user.strip()
 
+def get_yes_no():
+    user = input(">> ")
+    while user.upper() != 'Y' and user.upper() != 'N':
+        print("invalid input, try again...")
+        user = input(">> ")
+    return user.strip()
+
 def generate_secret():
     #try intialize or add text to the env -> save ti there
     new_secret = secrets.token_hex(32)
@@ -79,7 +86,6 @@ def create_token(user_id):
         "user_id": user_id,
         "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=2)
     }
-
     secret_key = get_secret()
     token = jwt.encode(payload, secret_key, algorithm="HS256")
     return token

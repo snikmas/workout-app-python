@@ -1,3 +1,5 @@
+from tkinter.messagebox import ERROR
+
 from dotenv import load_dotenv
 import bcrypt
 import logging
@@ -59,7 +61,6 @@ class DatabaseManager:
 
             #get id
             user.id = self.get_info_from_db("users", "id", "email", user.email)
-            print(f"FROMT HE CREATE USER DATABASE: USERID AND ITS TYPE: {user.id, type(user.id)}")
             return user
         except psycopg2.errors.NotNullViolation as NullError:
             print(f"Null Error happened {NullError}")
@@ -95,5 +96,23 @@ class DatabaseManager:
         except TypeError:
             print("the type error from the get_info_from_fb")
             logging.exception("More info: ")
-
         return None
+
+    def update_data(self, user_id, new_data, column):
+        try:
+            self.cursor.execute("UPDATE users SET {column} = %s WHERE user_id = %s}",
+                                (new_data, user_id))
+            self.db_con.commit()
+            return True
+        except Exception:
+            logging.exception("An error occurred")
+            return False
+
+    def delete_account(self, user_id):
+        try:
+            self.cursor.execute("DELETE FROM users WHERE user_id = %s", (user_id))
+            self.db_con.commit()
+            return True
+        except Exception:
+            logging.exception("Some errors..")
+            return None
