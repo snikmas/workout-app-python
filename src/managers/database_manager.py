@@ -155,10 +155,10 @@ class DatabaseManager:
             if exercise is None:
                 return False
             self.cursor.execute(
-            ("INSERT INTO exercises (id, name, target_muscles, body_parts, secondary_muscles, instructions, gif_url) "
+            "INSERT INTO exercises (id, name, target_muscles, body_parts, secondary_muscles, instructions, gif_url) "
              "VALUES (%s, %s, %s, %s, %s, %s, %s)", (exercise.id, exercise.name, exercise.target_muscles,
                                                      exercise.body_parts, exercise.secondary_muscles,
-                                                     exercise.instructions, exercise.gif_url)))
+                                                     exercise.instructions, exercise.gif_url))
             self.db_con.commit()
             return True
         except Exception:

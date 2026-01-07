@@ -21,14 +21,15 @@ class ProgramManager:
         amount_db_exercises = self.db_manager.amount_exercises()
         amount_api_exercises = self.api_manager.amount_exercises()
 
-        # late have to check parameter IF ONLY DB DOENST HAVE or just doesnt have a few ones
-        if amount_db_exercises is None:
+        if amount_db_exercises is None or amount_api_exercises > amount_db_exercises:
             all_exercises = self.api_manager.get_all_exercise_data() #list
             print(all_exercises)
+            if all_exercises is None:
+                print("Some problems with a server... Waiting")
+                return
             for data in all_exercises:
                 exercise = mapping_exercise_data(data)
                 if exercise is not None:
-                    #addig to the db+ check again if its exiss
                     if self.db_manager.is_exercise_exist(exercise.id) is True:
                         #do nothing, its exists
                         continue
@@ -36,9 +37,6 @@ class ProgramManager:
                         res = self.db_manager.add_exercise_data(exercise)
                         if res is not True:
                             print(f"some error duirng adding {exercise.id}...")
-
-
-            # have to parse dict
             return
             # self.db_manager.update_exercise_data(all_exercises)
         elif  amount_db_exercises < amount_api_exercises:

@@ -106,20 +106,17 @@ def check_connection(api_url):
 def mapping_session_data(res):
     nickname = res[db_user_tuple.get("nickname")]
     user_id = res[db_user_tuple.get("id")]
-    # email = res[db_user_tuple.get("email")]
-    # created_at = res[db_user_tuple.get("created_at")]
-    # password_hash = res[db_user_tuple.get("password_hash")] # *** CHECK NOTES THIS THING
     return Session(nickname=nickname, user_id=user_id)
 
 def mapping_exercise_data(data):
-    exerciseId = data[api_exercise_data.get("exerciseId")]
-    name = data[api_exercise_data.get("name")]
-    gif_url = data[api_exercise_data.get("gif_url")]
-    target_muscles = data[api_exercise_data.get("target_muscles")] #a list
-    body_parts = data[api_exercise_data.get("body_parts")] # a list
-    equipments = data[api_exercise_data.get("equipments")] # a list
-    secondary_muscles = data[api_exercise_data.get("secondary_muscles")]# a list
-    instructions = data[api_exercise_data.get("instructions")] # a list
+    exerciseId = data.get("exerciseId")
+    name = data.get("name")
+    gif_url = data.get("gif_url")
+    target_muscles = data.get("target_muscles")
+    body_parts = data.get("body_parts")
+    equipments = data.get("equipments")
+    secondary_muscles = data.get("secondary_muscles")
+    instructions = data.get("instructions")
 
     exercise = Exercise(exerciseId, name, target_muscles, body_parts, equipments, secondary_muscles,
                         instructions, gif_url)
