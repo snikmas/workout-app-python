@@ -1,7 +1,5 @@
-import jwt
+from src.managers.api_manager import ApiManager
 from src.managers.user_manager import UserManager
-from utils.constants import *
-from utils.helpers import *
 from managers.program_manager import *
 from managers.database_manager import *
 from managers.session_manager import *
@@ -15,12 +13,14 @@ class App:
         self.database_manager = None
         self.program_manager = None
         self.session_manager = None
+        self.api_manager = None
         # actually, no need for db.connection. this is db layer logic
 
     def run(self):
         self.database_manager = DatabaseManager()
         self.session_manager = SessionManager()
-        self.program_manager = ProgramManager(self.session, self.database_manager)
+        self.api_manager = ApiManager()
+        self.program_manager = ProgramManager(self.session, self.database_manager, self.api_manager)
         self.user_manager = UserManager(self.session, self.database_manager)
         generate_secret()
 
@@ -42,7 +42,8 @@ class App:
                         print("my progress history")
                     case 4:
                         print("=== Library Exercises ===")
-                        all_exercises = self.program_manager.get_all_exercises()
+                        all_exercises =  self.program_manager.get_all_exercises()
+
                     case 5:
                         print("=== Settings ===")
                         output_menu(menu_settings)
@@ -159,18 +160,7 @@ class App:
                     case 3:
                         print("library exersice")
                         print("=== Library Exercises ===")
-                        #get list of it
-                        exercises, total_exercises, total_pages = self.program_manager.get_all_exercises()
-                        if exercises is None:
-
-                            print("some issus")
-                            return
-                        elif exercises == 403:
-                            print("403 problrm. write frmo the run")
-
-
-                        # output using helpers.
-                        output_exercises(exercises, total_exercises, total_pages)
+                        all_exercises =  self.program_manager.get_all_exercises()
 
 
                     case 4:

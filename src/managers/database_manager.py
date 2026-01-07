@@ -129,3 +129,38 @@ class DatabaseManager:
         except Exception:
             logging.exception("Some errors..")
             return None
+
+
+    # ================================================================
+    # =================== DATA FOR EXERCISE MANAGER ==================
+
+    def amount_exercises(self):
+        try:
+            res = self.cursor.execute("SELECT COUNT(id) FROM exercises")
+            print("this is res")
+            print(res)
+            return res
+        except Exception:
+            logging.exception("Some errors in the amount")
+            return None
+
+    def update_exercise_data(self, allExercises):
+        pass
+
+    def is_exercise_exist(self, exersice_id):
+        pass
+
+    def add_exercise_data(self, exercise):
+        try:
+            if exercise is None:
+                return False
+            self.cursor.execute(
+            ("INSERT INTO exercises (id, name, target_muscles, body_parts, secondary_muscles, instructions, gif_url) "
+             "VALUES (%s, %s, %s, %s, %s, %s, %s)", (exercise.id, exercise.name, exercise.target_muscles,
+                                                     exercise.body_parts, exercise.secondary_muscles,
+                                                     exercise.instructions, exercise.gif_url)))
+            self.db_con.commit()
+            return True
+        except Exception:
+            logging.exception("Some error during adding exercise data")
+        return False

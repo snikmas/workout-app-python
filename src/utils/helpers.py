@@ -1,3 +1,4 @@
+import logging
 import secrets
 import os
 import datetime
@@ -7,6 +8,7 @@ import bcrypt
 import requests
 from dotenv import load_dotenv
 
+from src.classes.exercise import Exercise
 from src.classes.session import Session
 from src.utils.constants import *
 
@@ -108,3 +110,20 @@ def mapping_session_data(res):
     # created_at = res[db_user_tuple.get("created_at")]
     # password_hash = res[db_user_tuple.get("password_hash")] # *** CHECK NOTES THIS THING
     return Session(nickname=nickname, user_id=user_id)
+
+def mapping_exercise_data(data):
+    exerciseId = data[api_exercise_data.get("exerciseId")]
+    name = data[api_exercise_data.get("name")]
+    gif_url = data[api_exercise_data.get("gif_url")]
+    target_muscles = data[api_exercise_data.get("target_muscles")] #a list
+    body_parts = data[api_exercise_data.get("body_parts")] # a list
+    equipments = data[api_exercise_data.get("equipments")] # a list
+    secondary_muscles = data[api_exercise_data.get("secondary_muscles")]# a list
+    instructions = data[api_exercise_data.get("instructions")] # a list
+
+    exercise = Exercise(exerciseId, name, target_muscles, body_parts, equipments, secondary_muscles,
+                        instructions, gif_url)
+    if exercise is None:
+        logging.exception("Some [rpblems with mapping exercise data")
+        return None
+    return exercise
