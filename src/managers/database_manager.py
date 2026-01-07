@@ -70,17 +70,22 @@ class DatabaseManager:
 
     def auth_user(self, credentials, password):
         try:
-            res = self.cursor.execute("SELECT * FROM users WHERE nickname = (%s) OR email = (%s)",
-                                      (credentials, credentials))
+            if isinstance(credentials, str):
+                self.cursor.execute("SELECT * FROM users WHERE nickname = (%s) OR email = (%s)",
+                                          (credentials, credentials))
+            else:
+                #we pass an id
+                self.cursor.execute("SELECT * FROM users WHERE id = (%s)",
+                                    (credentials,))
             res = self.cursor.fetchone()
 
             if res is None:
                 return None
 
             # res is a tuple. NO PROBLEMS
-            password_from_db = res[db_user_tuple.get("password_hash")]
+            password_from_db = res[db_user_tuple.get("password_hash")].tobytes()
 
-            if bcrypt.checkpw(password, bytes(password_from_db)):
+            if bcrypt.checkpw(password, password_from_db):
                 session = mapping_session_data(res)
                 return session
         except Exception:
@@ -100,8 +105,16 @@ class DatabaseManager:
 
     def update_data(self, user_id, new_data, column):
         try:
-            self.cursor.execute("UPDATE users SET {column} = %s WHERE user_id = %s}",
-                                (new_data, user_id))
+            match column:
+                case "nickname":
+                    self.cursor.execute("UPDATE users SET nickname = %s WHERE id = %s",
+                                    (new_data, int(user_id)))
+                case "email":
+                    self.cursor.execute("UPDATE users SET email = %s WHERE id = %s",
+                                (new_data, int(user_id)))
+                case "password":
+                    self.cursor.execute("UPDATE users SET password_hash = %s WHERE id = %s",
+                                (new_data, int(user_id)))
             self.db_con.commit()
             return True
         except Exception:
@@ -110,7 +123,7 @@ class DatabaseManager:
 
     def delete_account(self, user_id):
         try:
-            self.cursor.execute("DELETE FROM users WHERE user_id = %s", (user_id))
+            self.cursor.execute("DELETE FROM users WHERE id = %s", (int(user_id),))
             self.db_con.commit()
             return True
         except Exception:

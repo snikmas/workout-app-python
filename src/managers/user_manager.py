@@ -1,9 +1,4 @@
 import logging
-from dataclasses import dataclass
-
-from PyQt5.QtSql import password
-
-from src.classes.session import Session
 from src.utils.helpers import *
 from src.classes.user import User
 from datetime import datetime
@@ -32,14 +27,22 @@ class UserManager:
 
         # call it after login or registr
         self.auth_user(new_user.id, new_user.nickname)
-        print(self.session)
 
         return self.session
 
     def login_user(self, credentials, password):
-        password = password.encode('utf-8')
 
+        # CHECK IF USER EXIST...
+        res = self.db_manager.is_user_exist(credentials, credentials)
+        if res is None:
+            return False
+
+        # password = get_password_hash(password)
+        password = password.encode("utf-8")
         session = self.db_manager.auth_user(credentials, password)
+        if session is None:
+            return False
+
         token = create_token(session.user_id)
         session.token = token
         session.is_authorized = True
@@ -55,19 +58,20 @@ class UserManager:
         self.session = session
 
     def verify_password(self, user_id, password):
-        password = password.encode('utf-8')
-        res = self.db_manager.auth_user(user_id, password)
-        # will be none if nothing
-        return res
+        password = password.encode("utf-8")
+        session = self.db_manager.auth_user(int(user_id), password)
+        print(session)
+        return session
 
     def change_user_data(self, user_id, new_data, data_type):
         # check is its data exists
-        if data_type is not "password":
+        if data_type != "password":
             res = self.db_manager.is_user_exist(new_data, new_data)
             if res:
                 return f"This {data_type} exists"
         else:
-            new_data = new_data.encode('utf-8')
+            new_data = get_password_hash(new_data)
+
 
         res = self.db_manager.update_data(user_id, new_data, data_type)
         if res is False:

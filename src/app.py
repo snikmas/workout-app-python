@@ -52,7 +52,6 @@ class App:
                         res = self.user_manager.verify_password(self.session.user_id, password)
                         if res is None:
                             print("Wrong password. Back to menu...")
-                            return
 
                         match input:
                             case 1:
@@ -63,6 +62,7 @@ class App:
                                     print(res)
                                     print("Back to menu...")
                                     return
+                                self.session.nickname = nickname
                                 print("The data updated")
                             case 2:
                                 print("Input your new email:")
@@ -76,8 +76,8 @@ class App:
                             case 3:
                                 print("Input your password (8+ symbols; contains digits and special symbols):")
                                 password = get_str_input(50, "password")
-
-                                res = self.user_manager.change_user_data(self.session.user_id, password)
+                                res = self.user_manager.change_user_data(self.session.user_id, password,
+                                                                         "password")
                                 if res is not True:
                                     print(res)
                                     print("Back to menu...")
@@ -86,9 +86,9 @@ class App:
                             case 4:
                                 print("Are you really want to delete your account? [Y/N]")
                                 user = get_yes_no()
-                                if user == 'Y':
-                                    res = self.user_manage.delete_account(self.session.user_id)
-                                    if user is not True:
+                                if user.upper() == 'Y':
+                                    res = self.user_manager.delete_account(self.session.user_id)
+                                    if user is None:
                                         print("Sometihng wrong...")
                                         return
                                     print("Your profile has been deleted. Bye")
@@ -115,7 +115,7 @@ class App:
                             credentials = get_str_input(50, None)
                             print("Input your password: ")
                             password = get_str_input(50, None)
-                            res = self.user_manager.login_user(credentials, password, None, None)
+                            res = self.user_manager.login_user(credentials, password)
                             if res:
                                 # res is a session
                                 self.session = res
