@@ -17,38 +17,41 @@ class ProgramManager:
         self.db_manager = db_manager
         self.api_manager = api_manager
 
-    def check_updates(self):
-        amount_db_exercises = self.db_manager.amount_exercises()
-        amount_api_exercises = self.api_manager.amount_exercises()
+    # change this thing: one call to api and db
+    def sync_exercises(self):
+
+        all_api_exercises_data = self.api_manager.amount_exercises()
+
+        amount_db_exercises = self.db_manager.get_all_exercise_data()
+        amount_api_exercises = all_api_exercises_data.res.get("metadata").get("totalExercises")
 
         if amount_db_exercises is None or amount_api_exercises > amount_db_exercises:
-            all_exercises = self.api_manager.get_all_exercise_data() #list
-            print(all_exercises)
+            all_exercises = all_api_exercises_data.get("data") #list
             if all_exercises is None:
                 print("Some problems with a server... Waiting")
                 return
             for data in all_exercises:
                 exercise = mapping_exercise_data(data)
-                if exercise is not None:
-                    if self.db_manager.is_exercise_exist(exercise.id) is True:
-                        #do nothing, its exists
-                        continue
-                    else:
-                        res = self.db_manager.add_exercise_data(exercise)
-                        if res is not True:
-                            print(f"some error duirng adding {exercise.id}...")
-            return
-            # self.db_manager.update_exercise_data(all_exercises)
-        elif  amount_db_exercises < amount_api_exercises:
-            pass
+                # if exercise is not None: # ADD IF DOENST EXIDST
+                #     if self.db_manager.is_exercise_exist(exercise.id) is True:
+                #         do nothing, its exists
+                        # continue
+                res = self.db_manager.add_exercise_data(exercise)
+                if res is not True:
+                    print(f"some error duirng adding {exercise.id}...")
         else:
             logging.exception("Unexpected result, program manager check updates")
-
-        # gen amount from the api. next if amount db = none or is les..
-        print(amount_db_exercises)
+            return False
+        return "The data has been synchronized."
 
 
     def get_all_exercises(self):
 
-        self.check_updates()
+        res = self.sync_exercises()
+        if res is False:
+            print("Some errors during sync...")
+            return
+        print(res)
+
+        # connect to db and get all data
         # 1/ compare count exersices from the api and from our db

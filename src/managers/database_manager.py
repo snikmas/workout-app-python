@@ -136,9 +136,7 @@ class DatabaseManager:
 
     def amount_exercises(self):
         try:
-            res = self.cursor.execute("SELECT COUNT(id) FROM exercises")
-            print("this is res")
-            print(res)
+            res = self.cursor.execute("SELECT * FROM exercises")
             return res
         except Exception:
             logging.exception("Some errors in the amount")
@@ -156,9 +154,10 @@ class DatabaseManager:
                 return False
             self.cursor.execute(
             "INSERT INTO exercises (id, name, target_muscles, body_parts, secondary_muscles, instructions, gif_url) "
-             "VALUES (%s, %s, %s, %s, %s, %s, %s)", (exercise.id, exercise.name, exercise.target_muscles,
-                                                     exercise.body_parts, exercise.secondary_muscles,
-                                                     exercise.instructions, exercise.gif_url))
+             "VALUES (%s, %s, %s, %s, %s, %s, %s) ON CONFLICT (id) DO NOTHING",
+                (exercise.id, exercise.name, exercise.target_muscles,
+                     exercise.body_parts, exercise.secondary_muscles,
+                     exercise.instructions, exercise.gif_url))
             self.db_con.commit()
             return True
         except Exception:
