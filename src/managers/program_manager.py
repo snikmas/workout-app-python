@@ -20,25 +20,29 @@ class ProgramManager:
     # change this thing: one call to api and db
     def sync_exercises(self):
 
-        all_api_exercises_data = self.api_manager.amount_exercises()
+        all_api_exercises_data = self.api_manager.get_all_exercise_data()
+        all_db_exercises = self.db_manager.get_all_exercise_data()
 
-        amount_db_exercises = self.db_manager.get_all_exercise_data()
-        amount_api_exercises = all_api_exercises_data.res.get("metadata").get("totalExercises")
+        amount_api_exercises = all_api_exercises_data.get("metadata").get("totalExercises")
+        amount_db_exercises = len(all_db_exercises)
 
         if amount_db_exercises is None or amount_api_exercises > amount_db_exercises:
             all_exercises = all_api_exercises_data.get("data") #list
             if all_exercises is None:
-                print("Some problems with a server... Waiting")
+                # didnt sycned but can run
+                logging.exception("all_exercises from the program manager in None")
+                print("Some errors occurred. The data hasn't been synchronized. Please try again later.")
                 return
-            for data in all_exercises:
-                exercise = mapping_exercise_data(data)
-                # if exercise is not None: # ADD IF DOENST EXIDST
-                #     if self.db_manager.is_exercise_exist(exercise.id) is True:
-                #         do nothing, its exists
-                        # continue
-                res = self.db_manager.add_exercise_data(exercise)
-                if res is not True:
-                    print(f"some error duirng adding {exercise.id}...")
+
+            list_data = [exercise for data in all_exercises if (exercise := mapping_exercise_data(data))
+                         is True or not logging.exception(f"Some error during adding {exercise.id}...")]
+
+            exercise_data = [(exercise.id, exercise.name, exercise.target_muscles,
+                              exercise.body_parts, exercise.secondary_muscles,
+                              exercise.instructions, exercise.gif_url) for exercise in list_data]
+
+            self.db_manager.add_exercise_data(exercise_data)
+
         else:
             logging.exception("Unexpected result, program manager check updates")
             return False
@@ -52,6 +56,7 @@ class ProgramManager:
             print("Some errors during sync...")
             return
         print(res)
+
 
         # connect to db and get all data
         # 1/ compare count exersices from the api and from our db

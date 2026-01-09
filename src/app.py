@@ -20,7 +20,7 @@ class App:
         self.database_manager = DatabaseManager()
         self.session_manager = SessionManager()
         self.api_manager = ApiManager()
-        self.program_manager = ProgramManager(self.session, self.database_manager, self.api_managerg)
+        self.program_manager = ProgramManager(self.session, self.database_manager, self.api_manager)
         self.user_manager = UserManager(self.session, self.database_manager)
         generate_secret()
 

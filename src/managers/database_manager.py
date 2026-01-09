@@ -134,30 +134,36 @@ class DatabaseManager:
     # ================================================================
     # =================== DATA FOR EXERCISE MANAGER ==================
 
-    def amount_exercises(self):
+    def get_all_exercise_data(self):
         try:
-            res = self.cursor.execute("SELECT * FROM exercises")
+            self.cursor.execute("SELECT * FROM exercises")
+            res = self.cursor.fetchall()
             return res
         except Exception:
             logging.exception("Some errors in the amount")
             return None
 
-    def update_exercise_data(self, allExercises):
+    def update_exercise_data(self, all_exercises):
         pass
 
     def is_exercise_exist(self, exersice_id):
         pass
 
-    def add_exercise_data(self, exercise):
+    def add_exercise_data(self, list_data):
         try:
-            if exercise is None:
+            if list_data is None:
                 return False
-            self.cursor.execute(
-            "INSERT INTO exercises (id, name, target_muscles, body_parts, secondary_muscles, instructions, gif_url) "
-             "VALUES (%s, %s, %s, %s, %s, %s, %s) ON CONFLICT (id) DO NOTHING",
-                (exercise.id, exercise.name, exercise.target_muscles,
-                     exercise.body_parts, exercise.secondary_muscles,
-                     exercise.instructions, exercise.gif_url))
+            print(list_data)
+            print(type(list_data))
+
+
+            query = "INSERT INTO exercises (id, name, target_muscles, body_parts, secondary_muscles, instructions, gif_url) VALUES (%s, %s, %s, %s, %s, %s, %s) ON CONFLICT (id) DO NOTHING"
+            self.cursor.executemany(query, list_data)
+                # (exercise.id, exercise.name, exercise.target_muscles,
+                #      exercise.body_parts, exercise.secondary_muscles,
+                #      exercise.instructions, exercise.gif_url))
+
+
             self.db_con.commit()
             return True
         except Exception:
